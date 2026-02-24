@@ -6,13 +6,12 @@ resource "aws_instance" "MyFirstInstnace" {
 
   provisioner "local-exec" {
       command = "echo ${aws_instance.MyFirstInstnace.public_ip} > instance_ip.txt" 
+  }
   tags = {
     Name = "custom_instance"
-    
-    }
-  output "instance_ip" {
-    value = aws_instance.MyFirstInstnace.public_ip
-  }
+   }
+}
 
-   
+output "public_ip" {
+  value = aws_instance.MyFirstInstnace.public_ip
 }
