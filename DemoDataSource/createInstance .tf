@@ -5,13 +5,14 @@ resource "aws_instance" "MyFirstInstnace" {
   availability_zone = data.aws_availability_zones.available.names[1]
 
   provisioner "local-exec" {
-      command = "echo ${aws_instance.MyFirstInstnace.public_ip} > instance_ip.txt" 
+      command = "echo ${aws_instance.MyFirstInstnace.private_ip} > instance_ip.txt"
+      
   }
   tags = {
     Name = "custom_instance"
    }
    output "public_ip" {
-  value = aws_instance.MyFirstInstnace.public_ip
+      value = aws_instance.MyFirstInstnace.public_ip
     }
 }
 
