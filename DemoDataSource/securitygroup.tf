@@ -2,8 +2,8 @@ data "aws_ip_ranges" "current" {
   regions = ["us-east-1"]
   services = ["ec2"]
 }
-resource "aws_security_group" "sg-custome_us_east" {
-  name        = "sg-custome_us_east"
+resource "aws_security_group" "sg_custome_us_east" {
+  name        = "sg_custome_us_east"
   description = "Allow SSH inbound traffic"
 
   ingress {
