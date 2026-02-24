@@ -13,7 +13,7 @@ resource "aws_security_group" "sg_custome_us_east" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = data.aws_ip_ranges.current.cidr_blocks
+    cidr_blocks = slice(data.aws_ip_ranges.current.cidr_blocks, 0, 50)
   }
 
   egress {
