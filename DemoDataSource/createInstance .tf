@@ -6,13 +6,13 @@ data "aws_ami" "latest" {
   most_recent = true
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
-  }
+   values = "ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"
+  }  
   filter {
     name   = "virtualization-type"
     values = ["hvm"]
   }
-  owners = ["099720109477"] # Amazon
+    owners = ["099720109477"] # Amazon
 }
 resource "aws_instance" "MyFirstInstnace" {
   ami           = data.aws_ami.latest.id
