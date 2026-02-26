@@ -22,6 +22,30 @@ resource "aws_db_parameter_group" "levelup_mariadb_parameter_group" {
   }
 }
 
+resource "aws_security_group" "allow_mariadb" {
+  name        = "allow_mariadb"
+  description = "Security group for allow mariadb"
+  vpc_id      = aws_vpc.vpc_levelup.id
+
+  ingress {
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
+    security_groups = [aws_security_group.levelup_allow_ssh.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "allow_mariadb"
+  }
+}
+
 resource "aws_db_instance" "levelup_mariadb_instance" {
   identifier              = "mariadb"
   allocated_storage       = 20
