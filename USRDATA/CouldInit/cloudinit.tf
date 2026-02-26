@@ -8,7 +8,7 @@ data "template_cloudinit_config" "intall-apache-config" {
 
     part {
       filename = "init.cfg"
-      content_type = "text/could-config"
+  content_type = "text/cloud-config"
       content = data.template_file.cloudinit.rendered
        }
 }
