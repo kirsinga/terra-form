@@ -4,7 +4,7 @@ data "template_file" "cloudinit" {
 
 data "template_cloudinit_config" "intall-apache-config" {
     gzip = true
-    base64_encode = true
+    base64_encode = false
 
     part {
       filename = "init.cfg"
