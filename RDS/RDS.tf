@@ -9,7 +9,7 @@ resource "aws_db_subnet_group" "levelup_mariadb_subnet_group" {
 }
 //RDS Parameter Group
 resource "aws_db_parameter_group" "levelup_mariadb_parameter_group" {
-  name        = "levelup_mariadb_parameter_group"
+  name        = "levelup-mariadb-parameter-group"
   family      = "mariadb10.5"
   description = "Custom parameter group for MariaDB"
  
@@ -18,7 +18,7 @@ resource "aws_db_parameter_group" "levelup_mariadb_parameter_group" {
     value="16777216"
   }
   tags = {
-    Name = "levelup_mariadb_parameter_group"
+    Name = "levelup-mariadb-parameter-group"
   }
 }
 
