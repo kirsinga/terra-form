@@ -8,7 +8,7 @@ resource "aws_instance" "MyFirstInstnace" {
   ami           = lookup(var.AMIS, var.AWS_REGION)
   instance_type = "t2.micro"
   key_name      = aws_key_pair.levelup_key.key_name
-  vpc_security_group_ids = [aws_security_group.allow_mariadb.id]
+  vpc_security_group_ids = [aws_security_group.levelup_allow_ssh.id]
   subnet_id = aws_subnet.levelup_subnet1.id
 
 
