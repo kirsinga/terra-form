@@ -3,7 +3,7 @@ data "template_file" "cloudinit" {
 }
 
 data "template_cloudinit_config" "intall-apache-config" {
-    gzip = true
+    gzip = false
     base64_encode = false
 
     part {
