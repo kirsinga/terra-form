@@ -32,9 +32,6 @@ variable "PATH_TO_PUBLIC_KEY" {
   default = "levelup_key.pub"
 }
 
-variable "KEY_PAIR_NAME" {
-  default = "levelup_key"
-}
 
 variable "INSTANCE_USERNAME" {
   default = "ubuntu"
