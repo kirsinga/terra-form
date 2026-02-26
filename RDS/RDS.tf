@@ -10,7 +10,7 @@ resource "aws_db_subnet_group" "levelup_mariadb_subnet_group" {
 //RDS Parameter Group
 resource "aws_db_parameter_group" "levelup_mariadb_parameter_group" {
   name        = "levelup-mariadb-parameter-group"
-  family      = "mariadb10.5"
+  family      = "mariadb10.11"
   description = "Custom parameter group for MariaDB"
  
   parameter {
@@ -51,8 +51,8 @@ resource "aws_db_instance" "levelup_mariadb_instance" {
   allocated_storage       = 20
   storage_type            = "gp2"
   engine                  = "mariadb"
-  engine_version          = "10.5"
-  instance_class          = "db.t2.micro"
+  engine_version          = "10.11"
+  instance_class          = "db.t3.micro"
   db_name                 = "mariadb"
   username                = "root"
   password                = "password123"
@@ -60,7 +60,7 @@ resource "aws_db_instance" "levelup_mariadb_instance" {
   vpc_security_group_ids  = [aws_security_group.allow_mariadb.id]
   parameter_group_name    = aws_db_parameter_group.levelup_mariadb_parameter_group.name
   skip_final_snapshot     = true
-  multi_az = "false"
+  multi_az = false
   backup_retention_period = 30
   availability_zone = aws_subnet.levelup_subnet1.availability_zone
 
