@@ -5,11 +5,11 @@ resource "aws_iam_role" "levelup-s3-access-role" {
     Version = "2012-10-17"
     Statement = [
       {
+        Sid    = "AssumeRolePolicy"
         Effect = "Allow"
         Principal = {
           Service = "ec2.amazonaws.com"
         }
-        sid=""
         Action = "sts:AssumeRole"
       }
     ]
