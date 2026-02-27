@@ -18,7 +18,7 @@ resource "aws_iam_role" "levelup_s3_access_role" {
 //policy  to attach the  s3 Bucket  role
 resource "aws_iam_role_policy" "levelup_s3_access_attachment" {
   role  = aws_iam_role.levelup_s3_access_role.name
-  policy= jsonenencode({
+  policy= jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -34,4 +34,9 @@ resource "aws_iam_role_policy" "levelup_s3_access_attachment" {
     ]
   })
   
+}
+//instace Identifier
+resource "aws_iam_instance_profile" "levelup_s3_access_instance_profile" {
+  name = "levelup_s3_access_instance_profile"
+  role = aws_iam_role.levelup_s3_access_role.name
 }
