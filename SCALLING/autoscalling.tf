@@ -10,6 +10,13 @@ resource "aws_key_pair" "levelup_key" {
     key_name = "levelup_key"
     public_key = file(var.PATH_TO_PUBLIC_KEY)
 }
+
+data "aws_subnets" "default_subnets" {
+  filter {
+    name   = "default-for-az"
+    values = ["true"]
+  }
+}
 //auto scalling group
 resource "aws_autoscaling_group" "levelup_asg" {
   name_prefix        = "levelup_asg-"
@@ -20,7 +27,7 @@ resource "aws_autoscaling_group" "levelup_asg" {
     id      = aws_launch_template.lt.id
     version = "$Latest"
   }
-  vpc_zone_identifier = ["us-east-2b","us-east-2a"]
+  vpc_zone_identifier = data.aws_subnets.default_subnets.ids
   health_check_grace_period = 200
   health_check_type = "EC2"
   force_delete = true
