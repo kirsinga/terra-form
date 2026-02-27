@@ -19,7 +19,7 @@ data "aws_subnets" "default_subnets" {
 }
 //auto scalling group
 resource "aws_autoscaling_group" "levelup_asg" {
-  name_prefix        = "levelup_asg-"
+  name_prefix        = "levelup-asg-"
   max_size           = 2
   min_size           = 1
   desired_capacity   = 1
@@ -33,7 +33,7 @@ resource "aws_autoscaling_group" "levelup_asg" {
   force_delete = true
   tag {
     key = "Name"
-    value = "Level Up Customer EC2 Instace "
+    value = "Level Up Customer EC2 Instace"
     propagate_at_launch = true
   }
 
