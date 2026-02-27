@@ -1,10 +1,9 @@
-//auto scalling launch configuration
-resource "aws_launch_configuration" "lc" {
-  name_prefix   = "lc-"
+//auto scalling launch template
+resource "aws_launch_template" "lt" {
+  name_prefix   = "lt-"
   image_id      = lookup(var.AMIS, var.AWS_REGION)
   instance_type = "t2.micro"
-  key_name = aws_key_pair.levelup_key.key_name
-
+  key_name      = aws_key_pair.levelup_key.key_name
 }
 
 resource "aws_key_pair" "levelup_key" {
@@ -17,7 +16,10 @@ resource "aws_autoscaling_group" "levelup_asg" {
   max_size           = 2
   min_size           = 1
   desired_capacity   = 1
-  launch_configuration = aws_launch_configuration.lc.name
+  launch_template {
+    id      = aws_launch_template.lt.id
+    version = "$Latest"
+  }
   vpc_zone_identifier = ["us-east-2b","us-east-2a"]
   health_check_grace_period = 200
   health_check_type = "EC2"
