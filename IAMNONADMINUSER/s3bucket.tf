@@ -6,17 +6,3 @@ resource "aws_s3_bucket" "levelup-bucket" {
   }
 }
 
-resource "aws_s3_bucket_ownership_controls" "levelup-bucket" {
-  bucket = aws_s3_bucket.levelup-bucket.id
-
-  rule {
-    object_ownership = "BucketOwnerPreferred"
-  }
-}
-
-resource "aws_s3_bucket_acl" "levelup-bucket" {
-  depends_on = [aws_s3_bucket_ownership_controls.levelup-bucket]
-  bucket     = aws_s3_bucket.levelup-bucket.id
-  acl        = "private"
-}
-
