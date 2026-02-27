@@ -92,3 +92,8 @@ resource "aws_cloudwatch_metric_alarm" "cpu_descalling_alarm" {
     
     alarm_actions = [aws_autoscaling_policy.levelup_descalling_policy.arn]
     }
+
+    //output default subnet ids
+output "default_subnet_ids" {   
+  value = data.aws_subnets.default_subnets.ids
+}
