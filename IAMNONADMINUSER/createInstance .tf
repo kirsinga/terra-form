@@ -8,7 +8,7 @@ resource "aws_instance" "MyFirstInstnace" {
   ami           = lookup(var.AMIS, var.AWS_REGION)
   instance_type = "t2.micro"
   key_name      = aws_key_pair.levelup_key.key_name
-  iam_instance_profile = aws_iam_instance_profile.levelup_s3_access_instance_profile.name
+  iam_instance_profile = aws_iam_instance_profile.levelup-s3-access-instance-profile.name
 
 
   tags = {
