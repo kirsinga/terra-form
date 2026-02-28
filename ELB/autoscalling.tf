@@ -4,6 +4,12 @@ resource "aws_launch_template" "lt" {
   image_id      = lookup(var.AMIS, var.AWS_REGION)
   instance_type = "t2.micro"
   key_name      = aws_key_pair.levelup_key.key_name
+  security_group_names = [aws_security_group.ec2_sg_instance.name]
+  user_data  = "#!/bin/bash\napt-get update\napt-get -y install net-tools nginx\nMYIP=`ifconfig | grep -E '(inet 10)|(addr:10)' | awk '{ print $2 }' | cut -d ':' -f2`\necho 'Hello Team\nThis is my IP: '$MYIP > /var/www/html/index.html"
+ lifecycle {
+    create_before_destroy = true
+
+ }
 }
 
 resource "aws_key_pair" "levelup_key" {
@@ -21,15 +27,16 @@ data "aws_subnets" "default_subnets" {
 resource "aws_autoscaling_group" "levelup_asg" {
   name_prefix        = "levelup-asg-"
   max_size           = 2
-  min_size           = 1
-  desired_capacity   = 1
+  min_size           = 2
+  desired_capacity   = 2
   launch_template {
     id      = aws_launch_template.lt.id
     version = "$Latest"
   }
   vpc_zone_identifier = data.aws_subnets.default_subnets.ids
   health_check_grace_period = 200
-  health_check_type = "EC2"
+  health_check_type = "ELB"
+  load_balancers = [aws_elb.levelupelb.name]
   force_delete = true
   tag {
     key = "Name"
@@ -38,62 +45,8 @@ resource "aws_autoscaling_group" "levelup_asg" {
   }
 
 }
-//auto scalling policy
-resource "aws_autoscaling_policy" "levelup_policy" {
-  name                   = "levelup_policy"
-  autoscaling_group_name = aws_autoscaling_group.levelup_asg.name
-  scaling_adjustment     = 1
-  adjustment_type        = "ChangeInCapacity"
-  cooldown = "200"
-  policy_type = "SimpleScaling"
-
-
+//output  for elb dns name 
+output "elb_dns_name" {
+  value = aws_elb.levelupelb.dns_name
 }
-//cloud watch alarm for auto scalling
-resource "aws_cloudwatch_metric_alarm" "cpu_alarm" {    
-    alarm_name          = "cpu_alarm"
-    comparison_operator = "GreaterThanThreshold"
-    evaluation_periods  = "2"
-    metric_name         = "CPUUtilization"
-    namespace           = "AWS/EC2"
-    period              = "120"
-    statistic           = "Average"
-    threshold           = "70"
-    
-    dimensions = {
-        AutoScalingGroupName = aws_autoscaling_group.levelup_asg.name
-    }
-    
-    alarm_actions = [aws_autoscaling_policy.levelup_policy.arn]
-    }
-    //auto descalling policy
-resource "aws_autoscaling_policy" "levelup_descalling_policy" {
-  name                   = "levelup_descalling_policy"
-  autoscaling_group_name = aws_autoscaling_group.levelup_asg.name
-  scaling_adjustment     = -1
-  adjustment_type        = "ChangeInCapacity"
-  cooldown = "200"
-  policy_type = "SimpleScaling"
-}
-//cloud watch alarm for auto descalling
-resource "aws_cloudwatch_metric_alarm" "cpu_descalling_alarm" {   
-    alarm_name          = "cpu_descalling_alarm"
-    comparison_operator = "LessThanThreshold"
-    evaluation_periods  = "2"
-    metric_name         = "CPUUtilization"
-    namespace           = "AWS/EC2"
-    period              = "120"
-    statistic           = "Average"
-    threshold           = "30"
-    
-    dimensions = {
-        AutoScalingGroupName = aws_autoscaling_group.levelup_asg.name
-    }
-    
-    alarm_actions = [aws_autoscaling_policy.levelup_descalling_policy.arn]
-    }
 
-    //output default subnet ids
-output "default_subnet_ids" {   
-  value = data.aws_subnets.default_subnets.ids
-}
