@@ -4,7 +4,7 @@ resource "aws_launch_template" "lt" {
   image_id      = lookup(var.AMIS, var.AWS_REGION)
   instance_type = "t2.micro"
   key_name      = aws_key_pair.levelup_key.key_name
-  security_group_names = [aws_security_group.ec2_sg_instance.name]
+  vpc_security_group_ids = [aws_security_group.ec2_sg_instance.id]
   user_data = base64encode(<<-EOF
     #!/bin/bash
     apt-get update
@@ -24,13 +24,6 @@ resource "aws_key_pair" "levelup_key" {
     key_name = "levelup_key"
     public_key = file(var.PATH_TO_PUBLIC_KEY)
 }
-
-data "aws_subnets" "default_subnets" {
-  filter {
-    name   = "default-for-az"
-    values = ["true"]
-  }
-}
 //auto scalling group
 resource "aws_autoscaling_group" "levelup_asg" {
   name_prefix        = "levelup-asg-"
@@ -41,7 +34,7 @@ resource "aws_autoscaling_group" "levelup_asg" {
     id      = aws_launch_template.lt.id
     version = "$Latest"
   }
-  vpc_zone_identifier = data.aws_subnets.default_subnets.ids
+  vpc_zone_identifier = [aws_subnet.levelup_subnet1.id, aws_subnet.levelup_subnet2.id]
   health_check_grace_period = 200
   health_check_type = "ELB"
   load_balancers = [aws_elb.levelupelb.name]
