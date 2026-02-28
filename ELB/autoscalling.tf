@@ -5,7 +5,15 @@ resource "aws_launch_template" "lt" {
   instance_type = "t2.micro"
   key_name      = aws_key_pair.levelup_key.key_name
   security_group_names = [aws_security_group.ec2_sg_instance.name]
-  user_data  = "#!/bin/bash\napt-get update\napt-get -y install net-tools nginx\nMYIP=`ifconfig | grep -E '(inet 10)|(addr:10)' | awk '{ print $2 }' | cut -d ':' -f2`\necho 'Hello Team\nThis is my IP: '$MYIP > /var/www/html/index.html"
+  user_data = base64encode(<<-EOF
+    #!/bin/bash
+    apt-get update
+    apt-get -y install net-tools nginx
+    MYIP=`ifconfig | grep -E '(inet 10)|(addr:10)' | awk '{ print $2 }' | cut -d ':' -f2`
+    echo 'Hello Team
+    This is my IP: '$MYIP > /var/www/html/index.html
+    EOF
+  )
  lifecycle {
     create_before_destroy = true
 
