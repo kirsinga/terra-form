@@ -7,9 +7,18 @@ resource "aws_launch_template" "lt" {
   vpc_security_group_ids = [aws_security_group.ec2_sg_instance.id]
   user_data = base64encode(<<-EOF
     #!/bin/bash
-    apt-get update
-    apt-get -y install net-tools nginx
-    MYIP=`ifconfig | grep -E '(inet 10)|(addr:10)' | awk '{ print $2 }' | cut -d ':' -f2`
+    if command -v apt-get >/dev/null 2>&1; then
+      apt-get update -y
+      apt-get install -y nginx
+      systemctl enable nginx
+      systemctl start nginx
+    elif command -v yum >/dev/null 2>&1; then
+      yum update -y
+      amazon-linux-extras install nginx1 -y || yum install -y nginx
+      systemctl enable nginx
+      systemctl start nginx
+    fi
+    MYIP=$(hostname -I | awk '{print $1}')
     echo 'Hello Team
     This is my IP: '$MYIP > /var/www/html/index.html
     EOF
@@ -64,8 +73,8 @@ resource "aws_security_group" "ec2_sg_instance" {
     }
       
     ingress {
-        from_port   = 22
-        to_port     = 22
+      from_port   = 80
+      to_port     = 80
         protocol    = "tcp"
         security_groups = [aws_security_group.elb_sg.id]
     }
