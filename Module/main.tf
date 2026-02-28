@@ -1,7 +1,6 @@
 //define madule
 module "ec2_cluster" {
-  source = "terraform-aws-modules/terraform-aws-ec2-instance.git"
-  vpc_cidr = ""
+  source = "./terraform-aws-modules/terraform-aws-ec2-instance.git"
   name = "ec2_cluster"
   ami = "ami-0f40c8f97004632f9"
   instance_type = "t2.micro"
