@@ -26,7 +26,7 @@ resource "aws_internet_gateway" "levelup_igw" {
 resource "aws_subnet" "levelup_subnet1" {
   vpc_id     = aws_vpc.aws_vpc_levelup.id
   cidr_block = var.subnet1_cidr
-  map_public_ip_on_launch = "true"
+  map_public_ip_on_launch = true
   availability_zone = var.subnet1_az
 
   tags = {
@@ -40,7 +40,7 @@ resource "aws_route_table" "levelup_public_rt" {
   vpc_id = aws_vpc.aws_vpc_levelup.id
 
   route {
-    cidr_block = "0.0.0/0"
+    cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.levelup_igw.id  
   }
     tags = {
