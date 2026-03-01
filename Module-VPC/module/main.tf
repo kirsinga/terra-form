@@ -3,8 +3,9 @@ provider "aws" {
   
   region = var.subnet1_az
 }
-module "myvpc" {
-  source="./module/custom_vpc"
+module "network" {
+  source = "./network"
+  vpcname = "levelup-vpc"
 }
 //resource key pair
 resource "aws_key_pair" "levelup_key" {
@@ -17,8 +18,8 @@ resource "aws_instance" "MyFirstInstnace" {
     ami           = var.ami_id
     instance_type = var.instance_type
     key_name      = aws_key_pair.levelup_key.key_name
-    vpc_security_group_ids = ["${module.network.security_group_id}"]
-    subnet_id = module.network.module_subnet1.id
+  vpc_security_group_ids = module.network.security_group_id
+  subnet_id = module.network.subnet1_id
  
     
     tags = {
