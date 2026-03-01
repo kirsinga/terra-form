@@ -18,8 +18,8 @@ resource "aws_instance" "MyFirstInstnace" {
     ami           = var.ami_id
     instance_type = var.instance_type
     key_name      = aws_key_pair.levelup_key.key_name
-  vpc_security_group_ids = module.network.security_group_id
-  subnet_id = module.network.subnet1_id
+    vpc_security_group_ids = ["${module.network.security_group_id}"]
+    subnet_id = module.network.subnet1_id
  
     
     tags = {
