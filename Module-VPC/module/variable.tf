@@ -7,7 +7,7 @@ variable "subnet1_az" {
 variable "public_key_path" {
     description = "The path to the public key file"
     type        = string
-    default     = "~/.ssh/id_rsa.pub"
+    default     = "~/.ssh/levelup.pub"
     }
    variable "ami_id" {
     description = "The AMI ID for the EC2 instance"
