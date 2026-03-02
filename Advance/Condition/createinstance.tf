@@ -24,6 +24,12 @@ data "aws_subnets" "default_subnets" {
   }
 }
 
+data "aws_subnets" "all_subnets" {}
+
+locals {
+  selected_subnet_id = length(data.aws_subnets.default_subnets.ids) > 0 ? data.aws_subnets.default_subnets.ids[0] : (length(data.aws_subnets.all_subnets.ids) > 0 ? data.aws_subnets.all_subnets.ids[0] : null)
+}
+
 module "ec2_cluster" {
   count = var.environment == "production" ? 2 : 1
   source = "terraform-aws-modules/ec2-instance/aws"
@@ -31,7 +37,7 @@ module "ec2_cluster" {
   name = "ec2_cluster-${count.index + 1}"
   ami = "ami-05803413c51f242b7"
   instance_type = "t2.micro"
-  subnet_id = data.aws_subnets.default_subnets.ids[0]
+  subnet_id = local.selected_subnet_id
 
    tags = {
     Name = "ec2_cluster"
