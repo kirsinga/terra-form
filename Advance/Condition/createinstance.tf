@@ -31,7 +31,7 @@ module "ec2_cluster" {
   name = "ec2_cluster-${count.index + 1}"
   ami = "ami-05803413c51f242b7"
   instance_type = "t2.micro"
-  subnet_id = data.aws_subnets.default_subnets.ids[count.index % length(data.aws_subnets.default_subnets.ids)]
+  subnet_id = data.aws_subnets.default_subnets.ids[0]
 
    tags = {
     Name = "ec2_cluster"
