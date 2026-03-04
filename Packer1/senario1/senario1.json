@@ -11,7 +11,8 @@
         "secret_key": "{{user `aws_secret_key`}}",
         "region": "us-east-1",
         "instance_type": "t2.micro",
-        "ssh_username": "ec2-user",
+        "ssh_username": "ubuntu",
+        "ssh_timeout": "15m",
         "ami_name": "packer-example {{timestamp}}",
         "tags": {
             "Name": "packer-example"
