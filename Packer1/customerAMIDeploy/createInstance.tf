@@ -1,10 +1,10 @@
 
 //module to create an Ec2 instance using the AMI created by packer
 module "develop_vpc" {
-  
-  source = "../Deploy_custom_Image/vpc.tf"
-  ENVIRONMENT = var.ENVIRONMENT
-  AWS_REGION = var.AWS_REGION
+  source = "../Deploy_custom_Image"
+  vpcname        = "customer-ami-vpc"
+  vpcenvironment = var.ENVIRONMENT
+  subnet1_az     = "${var.AWS_REGION}"
 }
 // AWS key pair resource to create a key pair for SSH access to the EC2 instance
 resource "aws_key_pair" "levelup_key" {
@@ -13,10 +13,9 @@ resource "aws_key_pair" "levelup_key" {
 }   
 // AWS instance resource to create an EC2 instance using the specified AMI and instance type
 resource "aws_instance" "MyFirstInstnace" {
-  ami           = var.AMIS
+  ami           = var.AMI_ID != "" ? var.AMI_ID : var.AMIS[var.AWS_REGION]
   instance_type = "t2.micro"
   key_name      = aws_key_pair.levelup_key.key_name
-  availability_zone = var.AWS_REGION
 
 
 
@@ -26,8 +25,8 @@ resource "aws_instance" "MyFirstInstnace" {
     Name = "custom_instance"
   }
 
- vpc_security_group_ids = [module.develop_vpc.security_group_id]
- subnet_id = module.develop_vpc.subnet_id
+ vpc_security_group_ids = module.develop_vpc.security_group_id
+ subnet_id = module.develop_vpc.subnet1_id
 
 }
 
