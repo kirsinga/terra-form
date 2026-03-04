@@ -1,0 +1,45 @@
+{
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": ""
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "region": "us-east-1",
+      "instance_type": "t2.micro",
+      "ssh_username": "ubuntu",
+      "ssh_timeout": "15m",
+      "ami_name": "packer-example {{timestamp}}",
+      "tags": {
+        "Name": "packer-example"
+      },
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "name": "ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*",
+          "root-device-type": "ebs"
+        },
+        "owners": [
+          "099720109477"
+        ],
+        "most_recent": true
+      },
+      "provisioners": [
+        {
+          "type": "shell",
+          "inline": [
+            "ls -al /home/ubuntu",
+            "cat /home/ubuntu/helloworld.txt"
+          ]
+        },
+        {
+          "type": "shell",
+          "script": "installnginx.sh"
+        }
+      ]
+    }
+  ]
+}
