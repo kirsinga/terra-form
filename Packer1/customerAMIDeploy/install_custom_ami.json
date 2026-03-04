@@ -9,6 +9,8 @@
             "access_key": "{{user `aws_access_key`}}",
             "secret_key": "{{user `aws_secret_key`}}",
             "region": "us-east-2",
+            "associate_public_ip_address": true,
+            "ssh_interface": "public_ip",
             "source_ami_filter": {
                 "filters": {
                     "virtualization-type": "hvm",
@@ -19,6 +21,13 @@
                     "099720109477"
                 ],
                 "most_recent": true
+            },
+            "subnet_filter": {
+                "filters": {
+                    "state": "available"
+                },
+                "most_free": true,
+                "random": false
             },
             "instance_type": "t2.micro",
             "ssh_username": "ubuntu",
