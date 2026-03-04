@@ -26,20 +26,20 @@
           "099720109477"
         ],
         "most_recent": true
-      },
-      "provisioners": [
-        {
-          "type": "shell",
-          "inline": [
-            "ls -al /home/ubuntu",
-            "cat /home/ubuntu/helloworld.txt"
-          ]
-        },
-        {
-          "type": "shell",
-          "script": "installnginx.sh"
-        }
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "ls -al /home/ubuntu",
+        "cat /home/ubuntu/helloworld.txt"
       ]
+    },
+    {
+      "type": "shell",
+      "script": "installnginx.sh"
     }
   ]
 }
