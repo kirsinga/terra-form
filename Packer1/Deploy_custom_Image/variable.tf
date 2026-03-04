@@ -54,7 +54,7 @@ variable "enable_classiclink_dns_support" {
 variable "subnet1_az" {
   description = "The availability zone for subnet 1"
   type        = string
-  default     = "us-east-2a"
+  default     = "us-east-2"
 }
 //variable for public key name 
 variable "public_key_path" {

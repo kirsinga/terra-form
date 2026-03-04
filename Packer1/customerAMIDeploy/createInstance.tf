@@ -4,18 +4,13 @@ module "develop_vpc" {
   source = "../Deploy_custom_Image"
   vpcname        = "customer-ami-vpc"
   vpcenvironment = var.ENVIRONMENT
-  subnet1_az     = "${var.AWS_REGION}"
+  subnet1_az     = "${var.AWS_REGION}a"
 }
-// AWS key pair resource to create a key pair for SSH access to the EC2 instance
-resource "aws_key_pair" "levelup_key" {
-    key_name = "levelup_key"
-    public_key = file(var.PATH_TO_PUBLIC_KEY)
-}   
 // AWS instance resource to create an EC2 instance using the specified AMI and instance type
 resource "aws_instance" "MyFirstInstnace" {
   ami           = var.AMI_ID != "" ? var.AMI_ID : var.AMIS[var.AWS_REGION]
   instance_type = "t2.micro"
-  key_name      = aws_key_pair.levelup_key.key_name
+  key_name      = "levelup_key"
 
 
 
