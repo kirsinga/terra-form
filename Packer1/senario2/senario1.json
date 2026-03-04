@@ -33,9 +33,9 @@
     {
       "type": "shell",
       "inline": [
-        "ls -al /home/ubuntu",
-        "cat /home/ubuntu/helloworld.txt"
-      ]
+        "mkdir -p /home/ubuntu",
+        "echo 'Hello, World!' > /home/ubuntu/helloworld.txt",
+        "chmod 644 /home/ubuntu/helloworld.txt"]
     },
     {
       "type": "shell",
