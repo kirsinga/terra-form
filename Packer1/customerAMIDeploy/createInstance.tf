@@ -25,7 +25,7 @@ resource "aws_instance" "MyFirstInstnace" {
     Name = "custom_instance"
   }
 
- vpc_security_group_ids = module.develop_vpc.security_group_id
+ vpc_security_group_ids = [module.develop_vpc.security_group_id]
  subnet_id = module.develop_vpc.subnet1_id
 
 }
