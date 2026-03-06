@@ -62,17 +62,20 @@ resource "aws_key_pair" "levelup_key" {
   public_key    = file(var.public_key_path)
 }
 
-resource "aws_launch_configuration" "launch_config_webserver" {
+resource "aws_launch_template" "launch_config_webserver" {
   name   = "launch_config_webserver"
   image_id      = lookup(var.AMIS, var.AWS_REGION)
   instance_type = var.INSTANCE_TYPE
-  user_data = "#!/bin/bash\napt-get update\napt-get -y install net-tools nginx\nMYIP=`ifconfig | grep -E '(inet 10)|(addr:10)' | awk '{ print $2 }' | cut -d ':' -f2`\necho 'Hello Team\nThis is my IP: '$MYIP > /var/www/html/index.html"
-  security_groups = [aws_security_group.levelup_webservers.id]
+  user_data = base64encode("#!/bin/bash\napt-get update\napt-get -y install net-tools nginx\nMYIP=`ifconfig | grep -E '(inet 10)|(addr:10)' | awk '{ print $2 }' | cut -d ':' -f2`\necho 'Hello Team\nThis is my IP: '$MYIP > /var/www/html/index.html")
+  vpc_security_group_ids = [aws_security_group.levelup_webservers.id]
   key_name = aws_key_pair.levelup_key.key_name
   
-  root_block_device {
-    volume_type = "gp2"
-    volume_size = "20"
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_type = "gp2"
+      volume_size = 20
+    }
   }
 }
 
@@ -84,7 +87,10 @@ resource "aws_autoscaling_group" "levelup_webserver" {
   health_check_type         = "EC2"
   desired_capacity          = 1
   force_delete              = true
-  launch_configuration      = aws_launch_configuration.launch_config_webserver.name
+  launch_template {
+    id      = aws_launch_template.launch_config_webserver.id
+    version = "$Latest"
+  }
   vpc_zone_identifier       = ["${var.vpc_public_subnet1}", "${var.vpc_public_subnet2}"]
   target_group_arns         = [aws_lb_target_group.load-balancer-target-group.arn]
 }
