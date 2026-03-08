@@ -38,3 +38,25 @@ resource "aws_eks_node_group" "node" {
     aws_iam_role_policy_attachment.AmazonEC2ContainerRegistryReadOnly,
   ]
 }
+
+resource "aws_eks_access_entry" "cluster_admin" {
+  count = trimspace(var.cluster_admin_principal_arn) != "" ? 1 : 0
+
+  cluster_name  = aws_eks_cluster.aws_eks.name
+  principal_arn = var.cluster_admin_principal_arn
+  type          = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "cluster_admin" {
+  count = trimspace(var.cluster_admin_principal_arn) != "" ? 1 : 0
+
+  cluster_name  = aws_eks_cluster.aws_eks.name
+  principal_arn = var.cluster_admin_principal_arn
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+
+  access_scope {
+    type = "cluster"
+  }
+
+  depends_on = [aws_eks_access_entry.cluster_admin]
+}
