@@ -5,7 +5,7 @@ resource "aws_eks_cluster" "aws_eks" {
   role_arn = aws_iam_role.eks_cluster.arn
 
   vpc_config {
-    subnet_ids = module.vpc.public_subnets
+    subnet_ids = concat(module.vpc.public_subnets, module.vpc.private_subnets)
   }
 
   depends_on = [
