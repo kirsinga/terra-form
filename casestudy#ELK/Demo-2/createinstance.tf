@@ -99,9 +99,8 @@ resource "aws_instance" "MyFirstInstnace" {
     host        = coalesce(self.public_ip, self.private_ip)
     type        = "ssh"
     user        = var.INSTANCE_USERNAME
-    private_key = file(pathexpand(var.PATH_TO_PRIVATE_KEY))
-    timeout     = "10m"
-  }
+    private_key = file(var.PATH_TO_PRIVATE_KEY)
+   }
 }
 
 resource "aws_eip" "ip" {
