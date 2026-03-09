@@ -1,7 +1,7 @@
 
 resource "aws_key_pair" "levelup_key" {
     key_name = "levelup_key"
-    public_key = file(var.PATH_TO_PUBLIC_KEY)
+  public_key = file(pathexpand(var.PATH_TO_PUBLIC_KEY))
 }
 
 resource "aws_security_group" "allow_elk" {
@@ -55,6 +55,7 @@ resource "aws_instance" "MyFirstInstnace" {
   instance_type = "m4.large"
   availability_zone = "ap-south-1a"
   key_name      = aws_key_pair.levelup_key.key_name
+  associate_public_ip_address = true
 
   vpc_security_group_ids = [
     aws_security_group.allow_elk.id,
@@ -98,7 +99,8 @@ resource "aws_instance" "MyFirstInstnace" {
     host        = coalesce(self.public_ip, self.private_ip)
     type        = "ssh"
     user        = var.INSTANCE_USERNAME
-    private_key = file(var.PATH_TO_PRIVATE_KEY)
+    private_key = file(pathexpand(var.PATH_TO_PRIVATE_KEY))
+    timeout     = "10m"
   }
 }
 
